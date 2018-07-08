@@ -23,7 +23,10 @@ class Approval_projects extends HomeControle {
  //   protected $userrole;
     
     private $notifyClass;
-
+/** 
+ * construct functions 
+ * @param Notification_controller $notifyClass
+ */
     public function __construct(Notification_controller $notifyClass) {
 
         // $this->middleware('admin');
@@ -31,11 +34,20 @@ class Approval_projects extends HomeControle {
         $this->notifydata = $this->getAllNotifyByView('admin', 0);
        $this->notifyClass = $notifyClass ;
     }
-
+/** 
+ * index function 
+ * 
+ * it is empty function
+ */
     public function index() {
         
     }
-
+/**
+ * Add new project 
+ * 
+ * this function for view page of 
+ * @return type
+ */
     public function addNewProjectView() {
         //  if(admin()->user()->)
         if (admin()->user()->user_role == 3) {
@@ -43,7 +55,11 @@ class Approval_projects extends HomeControle {
         }
         return view('admin.layout.404');
     }
-
+/**
+ * add new project 
+ * @param Request $request
+ * @return type
+ */
     public function addNewProject(Request $request) {
         $this->validate(request(), [
             'title' => 'required|unique:approvel_projects|max:255',
@@ -101,7 +117,15 @@ class Approval_projects extends HomeControle {
 
         return back();
     }
-
+/**
+ * 
+ * @param Request $request
+ * @return type
+ * 
+ * 
+ * Update project View
+ * this function for view the update project blade file 
+ */
     public function updateProjectView(Request $request) {
         $projectId = $request->id;
 
@@ -109,7 +133,13 @@ class Approval_projects extends HomeControle {
 
         return view('admin.projects.update', ['project' => $projectInfo, 'notification' => $this->notifydata]);
     }
-
+/**
+ * 
+ * @return type
+ * 
+ * Update project this function for update 
+ * project
+ */
     public function updateProject() {
         $this->validate(request(), [
             'title' => 'required|unique:approvel_projects|max:255',
@@ -138,7 +168,13 @@ class Approval_projects extends HomeControle {
         return back();
     }
 
-// projects with versions
+/**
+ * 
+ * @param Request $request
+ * @return type
+ * 
+ * view single project with versions's project
+ */
     public function project(Request $request) {
         // return view('admin.projects.project');
         $checkid = $request->id;
@@ -155,11 +191,29 @@ class Approval_projects extends HomeControle {
         }
     }
 
+    
+    /**
+     * 
+     * @param Request $request
+     * @return type
+     * 
+     * create new project's version 
+     * 
+     * view page
+     */
     public function NewProjectVersionView(Request $request) {
         $id = $request->id;
         return view('admin.projects.newversion', ['pid' => $id, 'notification' => $this->notifydata]);
     }
 
+    
+    /**
+     * 
+     * @param type $array
+     * @return type
+     * 
+     * this is a helper  function for create new 
+     */
     private function customArrayForversions($array) {
         $newList = array();
         $num = 1;
@@ -187,7 +241,13 @@ class Approval_projects extends HomeControle {
 
         return $newList;
     }
-
+/**
+ * 
+ * @param Request $request
+ * @return type
+ * 
+ * Create new project 
+ */
     public function newProjectVersion(Request $request) {
         $id = request('ke');
         $project_version = projects_versions::where('projectid', $id)->get();
@@ -240,7 +300,7 @@ class Approval_projects extends HomeControle {
         }
     }
 
-    // end project
+    
     /**
      * All Projects 
      * @return type
@@ -366,7 +426,12 @@ class Approval_projects extends HomeControle {
             return back();
         }
     }
-
+/**
+ * 
+ * @param Request $request
+ * @return type
+ * Save project comment
+ */
     public function saveproject_comment(Request $request) {
         $url = $request->encoded_url;
         $projectid = $request->id;
@@ -412,7 +477,13 @@ class Approval_projects extends HomeControle {
         Session::flash('alert-class', 'alert-success');
         return back();
     }
-
+/**
+ * 
+ * @param type $array
+ * @return type
+ * 
+ * this function is a helper function for create new array to load it on the blade view .
+ */
     private function customArrayForComment($array) {
         $newList = array();
         $num = 1;
@@ -439,7 +510,15 @@ class Approval_projects extends HomeControle {
 
         return $newList;
     }
-
+/**
+ * 
+ * @param Request $request
+ * @return type
+ * 
+ * delete comments 
+ * 
+ * 
+ */
     public function deleteComment(Request $request) {
         $id = $request->id;
 

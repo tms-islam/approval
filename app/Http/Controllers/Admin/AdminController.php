@@ -17,7 +17,11 @@ use Illuminate\Support\Facades\Session;
 class AdminController extends HomeControle {
 
     protected $notifydata = array();
-
+/**
+ * construct function 
+ * 
+ * load objects when called this classf
+ */
     public function __construct() {
 
         // $this->middleware('admin');
@@ -54,7 +58,7 @@ class AdminController extends HomeControle {
     }
 
     /**
-     * 
+     * add new User to the system 
      * @return type
      */
     public function addNewUser() {
@@ -98,7 +102,12 @@ class AdminController extends HomeControle {
             return back();
         }
     }
-
+/**
+ * this function return all user page 
+ * for system admin only 
+ * @param Request $request
+ * @return type
+ */
     public function Users(Request $request) {
         // print_r(session());
         // $as =   admin()->user()->user_role;
@@ -163,7 +172,13 @@ class AdminController extends HomeControle {
         //
     }
 
-//profile
+/**
+ * Profile function 
+ * 
+ * this function return currunt profile page for currunt user session .
+ * 
+ * @return type
+ */
     public function ProfilePage() {
         $userid = admin()->user()->id;
         $user = Admin::find($userid);
@@ -179,7 +194,11 @@ class AdminController extends HomeControle {
 //        }
         // print_r($userInfo);
     }
-
+/**
+ * get profile by id 
+ * @param Request $request
+ * @return type
+ */
     public function userprofile(Request $request) {
         $id = $request->id;
         $admin = Admin::find($id);
@@ -191,6 +210,11 @@ class AdminController extends HomeControle {
         }
     }
 
+    
+    /**
+     * update profile personal page 
+     * @return type
+     */
     public function updateuserprofile() {
         $id = request('uid');
         $select = request('select');
@@ -201,7 +225,11 @@ class AdminController extends HomeControle {
         return back();
     }
 
-    //endprofile
+   /**
+    * change password for user 
+    * @param Request $request
+    * @return type
+    */
 
     public function changepassword(Request $request) {
 
@@ -232,7 +260,11 @@ class AdminController extends HomeControle {
             return redirect()->back()->with("error", "New Password cannot be same as your current password. Please choose a different password.");
         }
     }
-
+/** 
+ * this function for activate user account by mail activation
+ * @param Request $request
+ * @return string
+ */
     public function completeCreateAccount(Request $request) {
         $key = $request->key;
         $user = Admin::where('activate_key', $key)->get();
@@ -247,7 +279,10 @@ class AdminController extends HomeControle {
         return view('admin.users.changepassword', ['key' => $key, 'notification' => $this->notifydata]);
         // echo $key;
     }
-
+/**
+ * change passowrd
+ * @return type
+ */
     public function dochangepass() {
         //$key = $request->key;
         $this->validate(request(), [
@@ -291,7 +326,11 @@ class AdminController extends HomeControle {
     }
 
     //update 
-
+/**
+ * Update User Status
+ * @param Request $request
+ * @return type
+ */
     public function updateUsersStatus(Request $request) {
         $this->checkCurruntUserRole(1);
         $id = $request->id;
