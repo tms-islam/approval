@@ -11,7 +11,7 @@ Right side column. Contains the navbar and content of the page -->
         <h1>Approval Projects</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-loop="true"></i> Dashboard
                 </a>
             </li>

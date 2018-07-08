@@ -8,7 +8,7 @@
         <h1>Users</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-color="#000"></i> Dashboard
                 </a>
             </li>

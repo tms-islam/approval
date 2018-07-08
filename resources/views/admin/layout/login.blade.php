@@ -38,7 +38,7 @@
                                   
                                     <br>Log In</h3>
                                                                       @if(Session::has('error'))
-<p class="alert alert-class">{{ Session::get('error') }}</p>
+                                                                      <p class="alert alert-class" style="color:red">{{ Session::get('error') }}</p>
 @endif
                                 <div class="form-group ">
                                     <label style="margin-bottom:0;" for="email1" class="uname control-label"> <i class="livicon" data-name="mail" data-size="16" data-loop="true" data-c="#3c8dbc" data-hc="#3c8dbc"></i> E-mail

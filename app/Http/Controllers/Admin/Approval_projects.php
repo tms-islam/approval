@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\Notification_controller;
 use App\DataTables\AdminDataTable;
 use App\Admin;
 use App\approvel_project;
@@ -20,12 +21,15 @@ class Approval_projects extends HomeControle {
     //
     protected $notifydata = array();
  //   protected $userrole;
+    
+    private $notifyClass;
 
-    public function __construct() {
+    public function __construct(Notification_controller $notifyClass) {
 
         // $this->middleware('admin');
      //   $this->userrole = admin()->user()->user_role;
         $this->notifydata = $this->getAllNotifyByView('admin', 0);
+       $this->notifyClass = $notifyClass ;
     }
 
     public function index() {
@@ -77,7 +81,22 @@ class Approval_projects extends HomeControle {
         );
         $this->createNewNotify($notificationData);
         // send mail 
-        Session::flash('message', 'Project Added successfully');
+//        $creatorid = admin()->user()->licens;
+//        $licensorInfo = Admin::find($creatorid);
+//        $licensorMail = $licensorInfo->email;
+//        $licensorName = $licensorInfo->name;
+//        $Mailmessage  = "Hi ".$licensorName ."    User  ".admin()->user()->email." is created new project";
+//        $mailtitle = "Craete New Project   You have New Notification";
+       
+        
+      //  app('App\Http\Controllers\Admin\Notification_controller')->sendMailNotify($Mailmessage , $licensorName , $mailtitle , $licensorMail);
+        
+     // $this->notifyClass()->send
+        //
+        
+        
+        
+        Session::flash('message', '* Project Added successfully');
         Session::flash('alert-class', 'alert-success');
 
         return back();

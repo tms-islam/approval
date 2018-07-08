@@ -24,7 +24,7 @@
         <h1>Account Setting</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="#">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-loop="true"></i> Dashboard
                 </a>
             </li>

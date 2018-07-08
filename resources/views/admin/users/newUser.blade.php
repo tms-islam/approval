@@ -17,7 +17,7 @@
                 </a>
             </li>
             <li>
-                <a href="#">Users</a>
+                <a href="{{aurl()}}">Users</a>
             </li>
             <li class="active">New User</li>
         </ol>

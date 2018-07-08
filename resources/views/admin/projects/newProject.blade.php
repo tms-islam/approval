@@ -7,7 +7,7 @@
         <h1>New Projects</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="#">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-loop="true"></i>
                     Dashboard
                 </a>
@@ -19,12 +19,15 @@
         </ol>
     </section>
     <!--section ends-->
-    
+
     <section class="content">
         <!--main content-->
         <div class="row">
             <!--row starts-->
             <div class="col-md-12">
+
+
+
 
                 <div class="panel panel-warning" id="hidepanel5">
                     <div class="panel-heading">
@@ -36,28 +39,34 @@
                             <i class="glyphicon glyphicon-chevron-up clickable"></i>
                             <i class="glyphicon glyphicon-remove removepanel clickable"></i>
                         </span>
-                        
-                          @if(Session::has('message'))
-    <div class="alert {{ Session::get('alert-class') }}alert-dismissable margin5">
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{ Session::get('message') }}
-    </div>
-                          @endif
+
+
                     </div>
                     <div class="panel-body">
-                         @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                            @endif
+                        @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+                        
+                        
+                        
+                <!----  errors and sucssefully messags     --->
+                @if(Session::has('message'))
+                <div class="alert {{ Session::get('alert-class') }}alert-dismissable margin5">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{ Session::get('message') }}
+                </div>
+                @endif
+                        
                         <form role="form" method="post" action="{{aurl('AddNewProjects')}}" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{csrf_token() }}">
 
-                           
+
                             <div class="form-group input-group">
                                 <span class="input-group-addon">title</span>
                                 <input type="text" name="title" class="form-control" value="{{ old('title')  }}" placeholder="">
