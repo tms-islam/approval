@@ -37,7 +37,7 @@
         <h1>{{$project[0]->title}}</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-color="#000"></i> Dashboard
                 </a>
             </li>
@@ -80,18 +80,20 @@
                                                 <div class="description">
                                                     <p> {{$project[0]->desc}}
                                                     </p>
-                                                    <a href="#" class="btn btn-primary btn_sizes" onclick="return launchEditor('editableimage1',
-                                                                '{{url(' / ')}}/images/{{$project[0]->fileurl}}');">Add Comment !</a>
+                                                    
                                                 </div>
 
                                                 @if(admin()->user()->user_role !=3)
                                                 <div class="row">
+                                                    
+                                                    <a href="#" class="btn btn-primary btn_sizes" onclick="return launchEditor('editableimage1',
+                                                                '{{url(' / ')}}/images/{{$project[0]->fileurl}}');">Add Comment !</a>
                                                     @if($project[0]->status == 0)
                                                     (rejected)
                                                     @endif
                                                     @if($project[0]->status == 1)
                                                     <a href="{{aurl('projects/updatestatus/')}}/{{$project[0]->id}}/0" class="btn btn-danger btn_sizes" >Reject</a>
-                                                    <a href="{{aurl('projects/updatestatus/')}}/{{$project[0]->id }}/2" class="btn btn-primary btn_sizes" >Approve</a>
+                                                    <a href="{{aurl('projects/updatestatus/')}}/{{$project[0]->id }}/2" class="btn btn-success btn_sizes" >Approve</a>
 
                                                     @endif
                                                     @if($project[0]->status == 2)
@@ -105,9 +107,9 @@
 
                                                 @if(admin()->user()->user_role == 3)
                                                 <div class="row">
-@if($project[0]->status == 1)
+                                                    @if($project[0]->status == 1)
                                                     <a href="{{ aurl('/') }}/project/NewVersion/{{$project[0]->id}}" class="btn btn-primary btn_sizes" >New version</a>
-                                            @endif
+                                                    @endif
                                                 </div>
                                                 @endif
 
@@ -165,7 +167,7 @@
                                                 <p>{{$val['version']}}</p>
                                             </div>
                                             <a href="#"  onclick="return launchEditor('edit{{$val['id']}}',
-                                                                 '{{url(' / ')}}/images/{{$val['id']}}');">Add Comment !</a>
+                                                            '{{url(' / ')}}/images/{{$val['id']}}');">Add Comment !</a>
                                         </div>
                                     </li>
 

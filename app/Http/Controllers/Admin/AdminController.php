@@ -39,7 +39,7 @@ class AdminController extends HomeControle {
     public function index(AdminDataTable $admin) {
         //
 
-        return $admin->render('admin.admins.index', ['title' => 'admin Control', 'notification' => $this->notifydata]);
+        return $admin->render('admin.admins.index', ['title' => 'Dashboard', 'notification' => $this->notifydata]);
     }
 
     /**

@@ -12,12 +12,12 @@
         <h1>New User</h1>
         <ol class="breadcrumb">
             <li>
-                <a href="index.html">
+                <a href="{{aurl()}}">
                     <i class="livicon" data-name="home" data-size="14" data-loop="true"></i> Dashboard
                 </a>
             </li>
             <li>
-                <a href="{{aurl()}}">Users</a>
+                <a href="{{aurl(/users)}}">Users</a>
             </li>
             <li class="active">New User</li>
         </ol>
