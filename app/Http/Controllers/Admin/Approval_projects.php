@@ -100,9 +100,33 @@ class Approval_projects extends HomeControle {
             'is_view' => 0
         );
         $this->createNewNotify($notificationData);
-        // send mail 
-      
-        //
+        // |||||| ||| ||| send mail || |||| |||| |||| \\
+          
+        
+        
+        /**
+         * start get email of licenses and user name 
+         */
+        $licensorid = admin()->user()->licens;
+        
+        $lisensor = Admin::find($licensorid);
+        $lisensormail = $lisensor->email;
+        $lisensesname = admin()->user()->name;
+        $projectTitle = request('title');
+        
+        
+        
+        
+         $data = array('title' => "create new project", 'projectid' => $result , 'licensesname'=>$lisensesname , 'projectTitle'=>$projectTitle);
+            Mail::send('emails.projectsmail', $data, function($message)use ($lisensormail, $lisensesname,$projectTitle) {
+
+                $message->to($lisensormail, $lisensesname)
+                        ->subject('Approval system');
+                $message->from('Admin@system.com', $lisensesname.' create project '.$projectTitle);
+            });
+        
+        
+        //|||| ||| ||| ||| end send mail         ||| |||| ||| |||| || \\
 
 
 
