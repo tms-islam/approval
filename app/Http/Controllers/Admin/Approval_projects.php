@@ -18,10 +18,7 @@ use Illuminate\Support\Facades\Session;
 
 class Approval_projects extends HomeControle {
 
-    //
     protected $notifydata = array();
-    //   protected $userrole;
-
     private $notifyClass;
 
     /**
@@ -29,7 +26,6 @@ class Approval_projects extends HomeControle {
      * @param Notification_controller $notifyClass
      */
     public function __construct(Notification_controller $notifyClass) {
-
         // $this->middleware('admin');
         //   $this->userrole = admin()->user()->user_role;
         $this->notifydata = $this->getAllNotifyByView('admin', 0);
@@ -37,17 +33,7 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * index function 
-     * 
-     * it is empty function
-     */
-    public function index() {
-        
-    }
-
-    /**
      * Add new project 
-     * 
      * this function for view page of 
      * @return type
      */
@@ -74,14 +60,10 @@ class Approval_projects extends HomeControle {
             'desc' => 'Approval Project  description',
             'image' => 'Uploaded file'
         ]);
-
-        //    $new  =   Admin::create(['name' => $name, 'email' => $email, 'password' => bcrypt('123456'), 'user_role' => $role, 'status' => 0, 'activate_key' => $key]);
-
         $image = $request->file('image');
         $input['imagename'] = time() . '.' . $image->getClientOriginalExtension();
         $destinationPath = public_path('/images');
         $image->move($destinationPath, $input['imagename']);
-
         $new = approvel_project::create([
                     'title' => request('title'),
                     'desc' => request('desc'),
@@ -101,42 +83,24 @@ class Approval_projects extends HomeControle {
         );
         $this->createNewNotify($notificationData);
         // |||||| ||| ||| send mail || |||| |||| |||| \\
-
-
-
         /**
          * start get email of licenses and user name 
          */
         $licensorid = admin()->user()->licens;
-
         $lisensor = Admin::find($licensorid);
         $lisensormail = $lisensor->email;
         $lisensesname = admin()->user()->name;
         $projectTitle = request('title');
-
-
-
-
         $data = array('title' => "create new project", 'projectid' => $result, 'licensesname' => $lisensesname, 'projectTitle' => $projectTitle);
         Mail::send('emails.projectsmail', $data, function($message)use ($lisensormail, $lisensesname, $projectTitle) {
-
             $message->to($lisensormail, $lisensesname)
                     ->subject('Approval system');
             $message->from('Admin@system.com', $lisensesname . ' create project ' . $projectTitle);
         });
-
-
         //|||| ||| ||| ||| end send mail         ||| |||| ||| |||| || \\
-
-
-
         Session::flash('message', '* Project Added successfully');
         Session::flash('alert-class', 'alert-success');
-
-
         return redirect('admin/project/' . $result);
-
-        // return back();
     }
 
     /**
@@ -150,16 +114,12 @@ class Approval_projects extends HomeControle {
      */
     public function updateProjectView(Request $request) {
         $projectId = $request->id;
-
         $projectInfo = approvel_project::find((int) $projectId);
-
         return view('admin.projects.update', ['project' => $projectInfo, 'notification' => $this->notifydata]);
     }
 
     /**
-     * 
      * @return type
-     * 
      * Update project this function for update 
      * project
      */
@@ -171,7 +131,6 @@ class Approval_projects extends HomeControle {
             'title' => 'Approval Project title',
             'desc' => 'Approval Project  description'
         ]);
-
         $id = request('pid');
         $project = approvel_project::find($id);
         $project->title = request('title');
@@ -192,35 +151,28 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param Request $request
      * @return type
-     * 
      * view single project with versions's project
      */
     public function project(Request $request) {
         // return view('admin.projects.project');
         $checkid = $request->id;
         $project = approvel_project::where('id', $checkid)->get();
-
         if (count($project) > 0) {
             $projectID = $project[0]->id;
             $commentarray = comments::where('projectid', $projectID)->get();
             $versionarray = projects_versions::where('projectid', $projectID)->get();
             $comment = $this->customArrayForComment($commentarray);
             $versions = $this->customArrayForversions($versionarray);
-
             return view('admin.projects.project', ['project' => $project, 'comments' => $comment, 'versions' => $versions, 'notification' => $this->notifydata]);
         }
     }
 
     /**
-     * 
      * @param Request $request
      * @return type
-     * 
      * create new project's version 
-     * 
      * view page
      */
     public function NewProjectVersionView(Request $request) {
@@ -229,10 +181,8 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param type $array
      * @return type
-     * 
      * this is a helper  function for create new 
      */
     private function customArrayForversions($array) {
@@ -259,27 +209,22 @@ class Approval_projects extends HomeControle {
             );
             $num++;
         }
-
         return $newList;
     }
 
     /**
-     * 
      * @param Request $request
      * @return type
-     * 
      * Create new project 
      */
     public function newProjectVersion(Request $request) {
         $id = request('ke');
         $project_version = projects_versions::where('projectid', $id)->get();
-
         if (count($project_version) > 0) {
             $version = count($project_version) + 1;
         } else {
             $version = 1;
         }
-
         $this->validate(request(), [
             'desc' => 'required',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048'
@@ -291,7 +236,6 @@ class Approval_projects extends HomeControle {
         $input['imagename'] = time() . '.' . $image->getClientOriginalExtension();
         $destinationPath = public_path('/images');
         $image->move($destinationPath, $input['imagename']);
-
         $new = projects_versions::create([
                     'projectid' => $id,
                     'userid' => admin()->user()->id,
@@ -321,23 +265,16 @@ class Approval_projects extends HomeControle {
             $lisensor = Admin::find($licensorid);
             $lisensormail = $lisensor->email;
             $lisensesname = admin()->user()->name;
-         
-
             //project information 
-
             $projectinfo = approvel_project::find($id);
             $projectname = $projectinfo->title;
-
             $data = array('title' => "create new project", 'projectid' => $id, 'licensesname' => $lisensesname, 'projectTitle' => $projectname);
             Mail::send('emails.projectsversionmail', $data, function($message)use ($lisensormail, $lisensesname) {
-
                 $message->to($lisensormail, $lisensesname)
                         ->subject('create new version of project ');
                 $message->from('Admin@system.com', $lisensesname);
             });
-
             /// |||  end sending mail |||| |||  /// 
-
             return redirect()->back()->with("success", "created successfully !");
         } else {
             return redirect()->back()->with("error", "error on create new version ");
@@ -349,11 +286,8 @@ class Approval_projects extends HomeControle {
      * @return type
      */
     public function projects() {
-
-
         $role = admin()->user()->user_role;
         if ($role == 1 || $role == 2) {
-
             $all = approvel_project::all();
             return view('admin.projects.projects', ['all' => $all, 'title' => 'All Projects', 'notification' => $this->notifydata]);
         } else {
@@ -363,10 +297,8 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param Request $request
      * @return type1
-     * 
      *  status 
      * 1= inprogress 
      * 2= approved
@@ -412,23 +344,17 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param Request $request
      * @return type
-     * 
      * update project status .
-     * 
      */
     public function updateprojectstatus(Request $request) {
-
         $id = $request->id;
         $status = $request->status;
         $role = admin()->user()->user_role;
         if ($role == 1 || $role == 2) {
             $project = approvel_project::find($id);
-
             $project->status = (int) $status;
-
             $project->save();
             $content = "Your project " . $project->title . " is updated";
             $notificationData = array(
@@ -448,10 +374,8 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param Request $request
      * @return type1
-     * 
      *  status 
      * 1= inprogress 
      * 2= approved
@@ -460,7 +384,6 @@ class Approval_projects extends HomeControle {
      */
     public function projectsstatusForAdmin(Request $request) {
         $type = $request->type;
-
         if ($type == "rejected") {
             $all = approvel_project::where(['status' => 0])->get();
             return view('admin.projects.projects', ['all' => $all, 'title' => 'All Projects']);
@@ -479,7 +402,6 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param Request $request
      * @return type
      * Save project comment
@@ -495,14 +417,10 @@ class Approval_projects extends HomeControle {
         $filename = time() . '.' . $ext;
         $file = file_get_contents($path);
         $save = file_put_contents('images/' . $filename, $file);
-
         $userDoComment = Admin::where('id', $curruntUser)->get();
-
         $UserDoCommentName = $userDoComment[0]->name;
         $UserDoCommentemail = $userDoComment[0]->email;
         $content = $UserDoCommentName . "($UserDoCommentemail)was add new comment in your project ";
-
-
         comments::create([
             'userid' => (int) $curruntUser,
             'projectid' => $projectid,
@@ -531,10 +449,8 @@ class Approval_projects extends HomeControle {
     }
 
     /**
-     * 
      * @param type $array
      * @return type
-     * 
      * this function is a helper function for create new array to load it on the blade view .
      */
     private function customArrayForComment($array) {
@@ -560,26 +476,18 @@ class Approval_projects extends HomeControle {
             );
             $num++;
         }
-
         return $newList;
     }
 
     /**
-     * 
      * @param Request $request
-     * @return type
-     * 
+     * @return type     * 
      * delete comments 
-     * 
-     * 
      */
     public function deleteComment(Request $request) {
         $id = $request->id;
-
         $curruntUser = admin()->user()->id;
-
         $comment = comments::find($id);
-
         if ($curruntUser == $comment->id) {
             $comment->delete();
         }

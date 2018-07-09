@@ -17,40 +17,32 @@ use Illuminate\Support\Facades\Session;
 class AdminController extends HomeControle {
 
     protected $notifydata = array();
-/**
- * construct function 
- * 
- * load objects when called this classf
- */
-    public function __construct() {
 
+    /**
+     * construct function 
+     * load objects when called this classf
+     */
+    public function __construct() {
         // $this->middleware('admin');
         $this->notifydata = $this->getAllNotifyByView('admin', 0);
 //        if(count($this->notifydata) ==0){
 //            $this->notifydata = 1;
-//        }
     }
 
     /**
      * Display a listing of the resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function index(AdminDataTable $admin) {
-        //
-
         return $admin->render('admin.admins.index', ['title' => 'Dashboard', 'notification' => $this->notifydata]);
     }
 
     /**
      * Show the form for creating a new resource.
-     *
      * @return \Illuminate\Http\Response
      */
     public function createNewUserView() {
         $this->checkUserRole();
-
-        //
         // $roles = DB::table('users_role')->get();
         $roles = users_role::all();
         $licenses = Admin::where(['user_role' => 2])->get();
@@ -62,58 +54,46 @@ class AdminController extends HomeControle {
      * @return type
      */
     public function addNewUser() {
-
         $name = request('name');
         $email = request('email');
         $role = request('select');
         $license = request('licenses');
         $key = md5(microtime());
-
-
         $created_userID = admin()->user()->id;
-
-        //    $user = Admin::whereEmail($email)->first();
         $users = Admin::where('email', $email)->get();
         if (count($users) > 0) {
             Session::flash('message', 'this email already on the system');
             Session::flash('alert-class', 'alert-danger');
             return back();
         } else {
-            //  print_r(request());
-            // echo request('select');
             Admin::create(['name' => $name, 'email' => $email, 'password' => bcrypt('123456'), 'user_role' => $role, 'status' => 0, 'activate_key' => $key, 'created_user' => $created_userID, 'licens' => $license]);
             //send mail 
-
             $mTitle = "You have request for login in Approval System as  " . $name . "($email)";
             //  $mURL = base_path() . "/admin/log/" . $key;
             //$mMessage = "please click <a href='$mURL' >here </a>for complete your login to our system ";
-
             $data = array('title' => $mTitle, 'key' => $key);
             Mail::send('emails.email', $data, function($message)use ($email, $name) {
-
                 $message->to($email, $name)
                         ->subject('Approval system');
                 $message->from('Admin@system.com', 'Approval project Admin');
             });
-
-
             Session::flash('message', 'created successfull');
             Session::flash('alert-class', 'alert-success');
             return back();
         }
     }
-/**
- * this function return all user page 
- * for system admin only 
- * @param Request $request
- * @return type
- */
+
+    /**
+     * this function return all user page 
+     * for system admin only 
+     * @param Request $request
+     * @return type
+     */
     public function Users(Request $request) {
         // print_r(session());
         // $as =   admin()->user()->user_role;
         //echo $as;
         if (admin()->user()->user_role == 1) {
-
             $users = Admin::all();
             return view('admin.users.users', ['users' => $users, 'title' => 'All Users', 'notification' => $this->notifydata]);
         } else {
@@ -122,83 +102,23 @@ class AdminController extends HomeControle {
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * Profile function 
+     * 
+     * this function return currunt profile page for currunt user session .
+     * 
+     * @return type
      */
-    public function store(Request $request) {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id) {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id) {
-        //
-    }
-
-/**
- * Profile function 
- * 
- * this function return currunt profile page for currunt user session .
- * 
- * @return type
- */
     public function ProfilePage() {
         $userid = admin()->user()->id;
         $user = Admin::find($userid);
-
         return view('admin.users.profile', ['user' => $user]);
-//        $userId = admin()->user()->id;
-//        $userInfo = Admin::find($userId);
-//        
-//      $pass =  $userInfo->password;
-//        
-//        if(Hash::check('123457', $pass)){
-//            echo 'done';
-//        }
-        // print_r($userInfo);
     }
-/**
- * get profile by id 
- * @param Request $request
- * @return type
- */
+
+    /**
+     * get profile by id 
+     * @param Request $request
+     * @return type
+     */
     public function userprofile(Request $request) {
         $id = $request->id;
         $admin = Admin::find($id);
@@ -210,7 +130,6 @@ class AdminController extends HomeControle {
         }
     }
 
-    
     /**
      * update profile personal page 
      * @return type
@@ -218,21 +137,18 @@ class AdminController extends HomeControle {
     public function updateuserprofile() {
         $id = request('uid');
         $select = request('select');
-
         $user = Admin::find($id);
         $user->licens = $select;
         $user->save();
         return back();
     }
 
-   /**
-    * change password for user 
-    * @param Request $request
-    * @return type
-    */
-
+    /**
+     * change password for user 
+     * @param Request $request
+     * @return type
+     */
     public function changepassword(Request $request) {
-
         $this->validate(request(), [
             'oldpassword' => 'required',
             'newpassword' => 'required',
@@ -253,18 +169,18 @@ class AdminController extends HomeControle {
                 $user = admin()->user();
                 $user->password = bcrypt($request->get('newpassword'));
                 $user->save();
-
                 return redirect()->back()->with("success", "Password changed successfully !");
             }
         } else {
             return redirect()->back()->with("error", "New Password cannot be same as your current password. Please choose a different password.");
         }
     }
-/** 
- * this function for activate user account by mail activation
- * @param Request $request
- * @return string
- */
+
+    /**
+     * this function for activate user account by mail activation
+     * @param Request $request
+     * @return string
+     */
     public function completeCreateAccount(Request $request) {
         $key = $request->key;
         $user = Admin::where('activate_key', $key)->get();
@@ -279,10 +195,11 @@ class AdminController extends HomeControle {
         return view('admin.users.changepassword', ['key' => $key, 'notification' => $this->notifydata]);
         // echo $key;
     }
-/**
- * change passowrd
- * @return type
- */
+
+    /**
+     * change passowrd
+     * @return type
+     */
     public function dochangepass() {
         //$key = $request->key;
         $this->validate(request(), [
@@ -292,7 +209,6 @@ class AdminController extends HomeControle {
             'newpassword' => 'password',
             'cpassword' => 'confirmation password'
         ]);
-
         $password = request('newpassword');
         $Cpassword = request('cpassword');
         $key = request('keys');
@@ -325,12 +241,11 @@ class AdminController extends HomeControle {
         }
     }
 
-    //update 
-/**
- * Update User Status
- * @param Request $request
- * @return type
- */
+    /**
+     * Update User Status
+     * @param Request $request
+     * @return type
+     */
     public function updateUsersStatus(Request $request) {
         $this->checkCurruntUserRole(1);
         $id = $request->id;

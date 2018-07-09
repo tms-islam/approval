@@ -6,28 +6,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Admin;
 use App\Mail\AdminResetPasword;
-
 use Carbon\Carbon;
 use Mail;
 
 class AdminAuth extends HomeControle {
+    /*
+     * Login Function , 
+     * 
+     * this function view . 
+     */
 
-    //
-
-/*
- * Login Function , 
- * 
- * this function view . 
- */
     public function login() {
-        
-        return view('admin.layout.login',['title' => 'Login']);
+        return view('admin.layout.login', ['title' => 'Login']);
     }
-/*
- * Login function 
- * 
- * check if user is on system or not 
- */
+
+    /*
+     * Login function 
+     * 
+     * check if user is on system or not 
+     */
+
     public function dologin() {
         $remeberme = Request('remeberme') == 1 ? true : false;
         if (admin()->attempt(['email' => request('email'), 'password' => request('password')], $remeberme)) {
@@ -37,30 +35,31 @@ class AdminAuth extends HomeControle {
             return redirect('admin/login');
         }
     }
-/*
- * Log out 
- * 
- * do logout actions 
- * 
- * 
- */
+
+    /*
+     * Log out
+     * do logout actions
+     */
+
     public function logout() {
         admin()->logout();
         return redirect('admin/login');
     }
-/**
- * Forget password functions  
- * View Function
- * @return type
- * 
- */
+
+    /**
+     * Forget password functions  
+     * View Function
+     * @return type
+     * 
+     */
     public function forgotPassword() {
         return view('admin.users.forgot');
     }
-/**
- * Reset password 
- * @return AdminResetPasword
- */
+
+    /**
+     * Reset password 
+     * @return AdminResetPasword
+     */
     public function doforgot() {
         $admin = Admin::where('email', request('username2'))->first();
         if (!empty($admin)) {
@@ -76,24 +75,25 @@ class AdminAuth extends HomeControle {
         }
         return back();
     }
-/**
- * reset passowrd
- * @param type $token
- * @return type
- */
+
+    /**
+     * reset passowrd
+     * @param type $token
+     * @return type
+     */
     public function reset_password($token) {
         $check_token = DB::table('password_resets')->where('token', $token)->where('created_at', '>', Carbon::now()->subHours(2))->first();
-
         if (!empty($check_token)) {
             return view('admin.users.resetpassword', ['data' => $check_token]);
         } else {
             return view(aurl('forgot'));
         }
     }
-/** 
- * reset password final 
- * @param type $token
- */
+
+    /**
+     * reset password final 
+     * @param type $token
+     */
     function reset_password_final($token) {
         $this->validate(request(), [
             'password' => 'required|confirmed',
