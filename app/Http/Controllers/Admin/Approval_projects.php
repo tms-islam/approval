@@ -101,22 +101,18 @@ class Approval_projects extends HomeControle {
         );
         $this->createNewNotify($notificationData);
         // send mail 
-//        $creatorid = admin()->user()->licens;
-//        $licensorInfo = Admin::find($creatorid);
-//        $licensorMail = $licensorInfo->email;
-//        $licensorName = $licensorInfo->name;
-//        $Mailmessage  = "Hi ".$licensorName ."    User  ".admin()->user()->email." is created new project";
-//        $mailtitle = "Craete New Project   You have New Notification";
-        //  app('App\Http\Controllers\Admin\Notification_controller')->sendMailNotify($Mailmessage , $licensorName , $mailtitle , $licensorMail);
-        // $this->notifyClass()->send
+      
         //
-        
-        
-        
+
+
+
         Session::flash('message', '* Project Added successfully');
         Session::flash('alert-class', 'alert-success');
 
-        return back();
+        
+         return redirect('admin/project/'.$result);
+        
+       // return back();
     }
 
     /**
