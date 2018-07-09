@@ -11,7 +11,7 @@ use App\approvel_project;
 use Illuminate\Http\Request;
 use Image;
 use App\comments;
-use App\activites;
+//use App\activites;
 use Mail;
 use App\projects_versions;
 use Illuminate\Support\Facades\Session;
@@ -101,31 +101,31 @@ class Approval_projects extends HomeControle {
         );
         $this->createNewNotify($notificationData);
         // |||||| ||| ||| send mail || |||| |||| |||| \\
-          
-        
-        
+
+
+
         /**
          * start get email of licenses and user name 
          */
         $licensorid = admin()->user()->licens;
-        
+
         $lisensor = Admin::find($licensorid);
         $lisensormail = $lisensor->email;
         $lisensesname = admin()->user()->name;
         $projectTitle = request('title');
-        
-        
-        
-        
-         $data = array('title' => "create new project", 'projectid' => $result , 'licensesname'=>$lisensesname , 'projectTitle'=>$projectTitle);
-            Mail::send('emails.projectsmail', $data, function($message)use ($lisensormail, $lisensesname,$projectTitle) {
 
-                $message->to($lisensormail, $lisensesname)
-                        ->subject('Approval system');
-                $message->from('Admin@system.com', $lisensesname.' create project '.$projectTitle);
-            });
-        
-        
+
+
+
+        $data = array('title' => "create new project", 'projectid' => $result, 'licensesname' => $lisensesname, 'projectTitle' => $projectTitle);
+        Mail::send('emails.projectsmail', $data, function($message)use ($lisensormail, $lisensesname, $projectTitle) {
+
+            $message->to($lisensormail, $lisensesname)
+                    ->subject('Approval system');
+            $message->from('Admin@system.com', $lisensesname . ' create project ' . $projectTitle);
+        });
+
+
         //|||| ||| ||| ||| end send mail         ||| |||| ||| |||| || \\
 
 
@@ -133,10 +133,10 @@ class Approval_projects extends HomeControle {
         Session::flash('message', '* Project Added successfully');
         Session::flash('alert-class', 'alert-success');
 
-        
-         return redirect('admin/project/'.$result);
-        
-       // return back();
+
+        return redirect('admin/project/' . $result);
+
+        // return back();
     }
 
     /**
@@ -275,7 +275,7 @@ class Approval_projects extends HomeControle {
         $project_version = projects_versions::where('projectid', $id)->get();
 
         if (count($project_version) > 0) {
-            $version = ount($project_version) + 1;
+            $version = count($project_version) + 1;
         } else {
             $version = 1;
         }
@@ -316,6 +316,28 @@ class Approval_projects extends HomeControle {
         );
         $this->createNewNotify($notificationData);
         if ($result > 0) {
+            //||||| ||| |||  send mail  ||||  // /// 
+            $licensorid = admin()->user()->licens;
+            $lisensor = Admin::find($licensorid);
+            $lisensormail = $lisensor->email;
+            $lisensesname = admin()->user()->name;
+         
+
+            //project information 
+
+            $projectinfo = approvel_project::find($id);
+            $projectname = $projectinfo->title;
+
+            $data = array('title' => "create new project", 'projectid' => $id, 'licensesname' => $lisensesname, 'projectTitle' => $projectname);
+            Mail::send('emails.projectsversionmail', $data, function($message)use ($lisensormail, $lisensesname) {
+
+                $message->to($lisensormail, $lisensesname)
+                        ->subject('create new version of project ');
+                $message->from('Admin@system.com', $lisensesname);
+            });
+
+            /// |||  end sending mail |||| |||  /// 
+
             return redirect()->back()->with("success", "created successfully !");
         } else {
             return redirect()->back()->with("error", "error on create new version ");
